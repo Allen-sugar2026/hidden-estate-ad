@@ -1,0 +1,11 @@
+# 字型示範頁（非正式站內容）
+font-demo.html
+font-demo2.html
+
+# Logo 原始／備份檔（正式站只需 logo.png）
+assets/logo-original.png
+assets/logo-src-red.png
+
+# 系統雜項
+Thumbs.db
+.DS_Store
