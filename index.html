@@ -261,16 +261,58 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   footer small{display:block;margin-top:20px;opacity:.75;letter-spacing:.1em;font-size:12px;color:#9a8064}
 
   /* ---------- Floating buttons ---------- */
-  .fabs{position:fixed;right:22px;bottom:26px;z-index:60;display:flex;flex-direction:column;gap:12px}
+  .fabs{
+    position:fixed;right:22px;bottom:26px;z-index:60;
+    display:flex;flex-direction:column;align-items:flex-end;gap:12px;
+  }
   .fab{
+    position:relative;
     width:54px;height:54px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
     color:#fff;text-decoration:none;font-size:22px;font-weight:700;
-    box-shadow:0 8px 22px -6px rgba(0,0,0,.4);transition:transform .2s;
+    box-shadow:0 8px 22px -6px rgba(0,0,0,.4);
+    transition:transform .2s,box-shadow .2s,opacity .3s,visibility .3s;
   }
-  .fab:hover{transform:translateY(-3px)}
+  .fab:hover{transform:translateY(-3px);box-shadow:0 12px 26px -6px rgba(0,0,0,.45)}
+  .fab svg{width:30px;height:30px;fill:currentColor;display:block}
   .fab.line{background:#06c755}
-  .fab.top{background:var(--wine)}
+  .fab.top{background:var(--wine);font-size:20px;line-height:1}
+
+  /* 呼吸光環：輕輕提示可點，不干擾閱讀 */
+  .fab.line::after{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    border:1px solid #06c755;animation:fab-ring 2.6s ease-out infinite;
+    pointer-events:none;
+  }
+  @keyframes fab-ring{
+    0%{transform:scale(1);opacity:.55}
+    70%{transform:scale(1.45);opacity:0}
+    100%{transform:scale(1.45);opacity:0}
+  }
+
+  /* hover 時滑出的文字標籤（桌機） */
+  .fab .fab-label{
+    position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(8px);
+    background:#fff;color:var(--wine);
+    font-family:"Noto Serif TC","Songti TC",serif;
+    font-size:14px;font-weight:600;letter-spacing:.14em;white-space:nowrap;
+    padding:8px 16px;border-radius:30px;
+    box-shadow:0 8px 22px -8px rgba(74,13,22,.5);
+    opacity:0;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s;
+  }
+  .fab .fab-label::after{
+    content:"";position:absolute;left:100%;top:50%;transform:translateY(-50%);
+    border:6px solid transparent;border-left-color:#fff;
+  }
+  .fab:hover .fab-label{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0)}
+
+  /* 回頂端：捲動一段距離後才出現 */
+  .fab.top{opacity:0;visibility:hidden;pointer-events:none}
+  .fabs.scrolled .fab.top{opacity:1;visibility:visible;pointer-events:auto}
+
+  @media(prefers-reduced-motion:reduce){
+    .fab.line::after{animation:none}
+  }
 
   /* ---------- Responsive ---------- */
   @media(max-width:820px){
@@ -311,6 +353,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .gallery-card .gc-name{font-size:20px}
     .mosaic .gold-script{font-size:34px;right:4%;top:auto;bottom:8%}
     .mosaic .logo-badge{width:150px;height:150px}
+    .fabs{right:14px;bottom:16px;gap:10px}
+    .fab{width:50px;height:50px}
+    .fab svg{width:27px;height:27px}
+    .fab .fab-label{display:none}   /* 手機沒有 hover，省掉標籤 */
   }
 </style>
 </head>
@@ -430,6 +476,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <small>© 2026 隱密莊園 ・ ALL RIGHTS RESERVED</small>
   </footer>
 
+  <!-- ===== 側邊浮動按鈕（隨捲動固定跟隨） ===== -->
+  <div class="fabs" id="fabs">
+    <a class="fab line" href="https://lin.ee/uajxXvA" target="_blank" rel="noopener"
+       aria-label="加入 LINE 好友">
+      <span class="fab-label">加 LINE 諮詢</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+    </a>
+    <button class="fab top" id="fabTop" type="button" aria-label="回到頂端">▲</button>
+  </div>
 
+  <script>
+    (function(){
+      var fabs = document.getElementById('fabs');
+      var top  = document.getElementById('fabTop');
+      var ticking = false;
+
+      function update(){
+        fabs.classList.toggle('scrolled', window.scrollY > 400);
+        ticking = false;
+      }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, {passive:true});
+      update();
+
+      top.addEventListener('click', function(){
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    })();
+  </script>
 </body>
 </html>
